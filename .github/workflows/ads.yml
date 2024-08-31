@@ -26,15 +26,10 @@ jobs:
             git checkout -b Ad-Free
           fi
 
-      - name: Remove ads from HTML files
-        run: |
-          for file in static/404.html static/apps.html static/games.html static/index.html static/privacy.html static/settings.html static/tools.html static/tos.html; do
-            if [ -f "$file" ]; then
-              sed -i '/<div>/,/<\/div>/d' "$file"
-            else
-              echo "$file not found"
-            fi
-          done
+ - name: Remove specific JS code from main.js
+  run: |
+    sed -i '/document\.addEventListener("DOMContentLoaded", () => {/,/document\.body\.appendChild(script);/d' static/assets/js/main.js
+
 
       - name: Commit changes
         env:
@@ -43,8 +38,8 @@ jobs:
         run: |
           git config --global user.name "${GIT_USERNAME}"
           git config --global user.email "${GIT_EMAIL}"
-          git add static/404.html static/apps.html static/games.html static/index.html static/privacy.html static/settings.html static/tools.html static/tos.html
-          git commit -m "Remove ads from HTML files"
+          git add static/assets/js/main.js
+          git commit -m "Remove specific JS code from main.js"
 
       - name: Push changes to Ad-Free branch
         run: |
